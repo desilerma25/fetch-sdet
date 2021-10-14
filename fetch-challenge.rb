@@ -2,13 +2,6 @@ require 'selenium-webdriver'
 require 'webdrivers'
 require 'rspec'
 
-
-# driver = Selenium::WebDriver.for :chrome
-
-
-
-# driver.navigate.to "http://ec2-54-208-152-154.compute-1.amazonaws.com/"
-
 def init_comparison(driver)
     driver.find_element(id: 'left_0').send_keys('0')
     driver.find_element(id: 'left_1').send_keys('1')
@@ -22,10 +15,6 @@ def init_comparison(driver)
 
     driver.find_element(id: 'weigh').click
 end
-
-# wait = Selenium::WebDriver::Wait.new(timeout: 5)
-
-# weight = 1
 
 def find_fake(driver)
     wait = Selenium::WebDriver::Wait.new(timeout: 5)
@@ -56,7 +45,6 @@ def find_fake(driver)
             left_result = driver.find_element(xpath: "//div[1]/div[1]/div[5]/ol[1]/li[#{weight}]").text
             puts left_result
             if left_result.include?('<')
-                # need to work on choosing goldbar
             driver.find_element(id: "coin_#{i}").click
             yay = driver.switch_to.alert.text
             puts yay
@@ -91,18 +79,7 @@ def find_fake(driver)
     end
 end
 
-# def yay_alert(driver)
-#     wait = Selenium::WebDriver::Wait.new(timeout: 10)
-#     wait.until { driver.find_element(class: 'alert').displayed? }
-#     banner = driver.find_element(class: 'alert')
-#     banner_text = banner.text
-# end
-
 describe "finding fake gold bar" do
-    # before(:each) do
-    #     driver = Selenium::WebDriver.for :chrome
-    #     driver.navigate.to "http://ec2-54-208-152-154.compute-1.amazonaws.com/"
-    # end
     it "runs Selenium automation" do
     driver = Selenium::WebDriver.for :chrome
     driver.navigate.to "http://ec2-54-208-152-154.compute-1.amazonaws.com/"
