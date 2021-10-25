@@ -16,10 +16,28 @@ def init_comparison(driver)
     driver.find_element(id: 'weigh').click
 end
 
+$wait = Selenium::WebDriver::Wait.new(timeout: 5)
+
+def alerting(driver, i)
+    driver.find_element(id: "coin_#{i}").click
+    yay = driver.switch_to.alert.text
+    puts yay
+    yay
+end
+
+def less_than(driver, weight, i)
+    driver.find_element(id: 'weigh').click
+    $wait.until { driver.find_element(xpath: "//div[1]/div[1]/div[5]/ol[1]/li[#{weight}]").displayed? }
+    right_result = driver.find_element(xpath: "//div[1]/div[1]/div[5]/ol[1]/li[#{weight}]").text
+    puts right_result
+    if right_result.include?('<')
+        true
+    end
+end
+
 def find_fake(driver)
-    wait = Selenium::WebDriver::Wait.new(timeout: 5)
     weight = 1
-    wait.until { driver.find_element(xpath: "//div[1]/div[1]/div[5]/ol[1]/li[#{weight}]").displayed? }
+    $wait.until { driver.find_element(xpath: "//div[1]/div[1]/div[5]/ol[1]/li[#{weight}]").displayed? }
     result = driver.find_element(xpath: "//div[1]/div[1]/div[5]/ol[1]/li[#{weight}]").text
     puts result
     reset = driver.find_element(xpath: '//div[1]/div[1]/div[4]/button[1]')
@@ -39,20 +57,9 @@ def find_fake(driver)
             reset.click
             driver.find_element(id: 'left_0').send_keys("#{i}")
             driver.find_element(id: 'right_0').send_keys('4')
-            driver.find_element(id: 'weigh').click
-            # weight +=1 
-            wait.until { driver.find_element(xpath: "//div[1]/div[1]/div[5]/ol[1]/li[#{weight}]").displayed? }
-            left_result = driver.find_element(xpath: "//div[1]/div[1]/div[5]/ol[1]/li[#{weight}]").text
-            puts left_result
-            if left_result.include?('<')
-            driver.find_element(id: "coin_#{i}").click
-            yay = driver.switch_to.alert.text
-            puts yay
-            return yay
-            driver.quit
-            break
+            if less_than(driver, weight, i) == true
+                return alerting(driver, i)
             end
-            i +=1
         end
     else
         sleep 2
@@ -62,19 +69,9 @@ def find_fake(driver)
             reset.click
             driver.find_element(id: 'left_0').send_keys("#{i}")
             driver.find_element(id: 'right_0').send_keys('3')
-            driver.find_element(id: 'weigh').click
-            wait.until { driver.find_element(xpath: "//div[1]/div[1]/div[5]/ol[1]/li[#{weight}]").displayed? }
-            right_result = driver.find_element(xpath: "//div[1]/div[1]/div[5]/ol[1]/li[#{weight}]").text
-            puts right_result
-            if right_result.include?('<')
-                driver.find_element(id: "coin_#{i}").click
-                yay = driver.switch_to.alert.text
-                puts yay
-                return yay
-                driver.quit
-                break
+            if less_than(driver, weight, i) == true
+                return alerting(driver, i)
             end
-            i +=1
         end
     end
 end
